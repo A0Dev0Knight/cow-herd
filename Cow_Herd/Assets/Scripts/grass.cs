@@ -9,7 +9,11 @@ public class grass : MonoBehaviour
     public const float MILK_POINTS = 5;
     public const float GROW_MULTIPLIER = 2;
     public const float MAX_GRASS_LEVEL = 3;
-    
+    public const float GROW_TIMER = 2f;
+
+    [SerializeField] private MeshFilter grassModelLevelMedium;
+    [SerializeField] private MeshFilter grassModelLevelMax;
+
     float health = HEALTH_POINTS;
     float revivePoints = REVIVE_POINTS;
     float milkPoints = MILK_POINTS;
@@ -17,7 +21,7 @@ public class grass : MonoBehaviour
 
     int grassSize = 0; // by default grass is the smallest, by time it grows
 
-    float growTimer = 10f; //after 10 seconds the grass grows
+    float growTimer = GROW_TIMER; //after 10 seconds the grass grows
 
     void Grow()
     {
@@ -30,6 +34,7 @@ public class grass : MonoBehaviour
             revivePoints *= GROW_MULTIPLIER;
             milkPoints *= GROW_MULTIPLIER;
         }
+        Debug.Log("Grown");
     }
 
     void TakeDamage(float damage)
@@ -57,9 +62,20 @@ public class grass : MonoBehaviour
             Debug.Log("+ " + revivePoints);
 
         }
+        if (!isBeingConsumed && growTimer > 0)
+        {
+            growTimer -= Time.deltaTime;
+        }
+        else
+        {
+            growTimer = GROW_TIMER;
+            if (!isBeingConsumed)
+            {
+                Grow();
+            }
+        }
         // after timer
-        //Grow()
-        // Grow() must not be applyed when grass is consumed
-        // isBeingConsumed = false; // by this i hope to catch the moment a cow stops eating away a grass
+        
+        isBeingConsumed = false; // by this i hope to catch the moment a cow stops eating away a grass
     }
 }
